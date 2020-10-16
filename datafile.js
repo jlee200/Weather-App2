@@ -1,5 +1,4 @@
-React.useEffect(() => {
-    const data = [
+const data = [
       {
       "wind_cdir":"W",
       "rh":70,
@@ -1520,8 +1519,6 @@ React.useEffect(() => {
       "clouds_mid":0,
       "clouds_low":0
       }
-      ]
-    setData2(data);
-  }, [])
+      ];
 
-  export default datafile;
+export default data;
