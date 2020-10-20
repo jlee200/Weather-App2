@@ -64,8 +64,8 @@ function getBackground(feels) {
 
 function parseDataPOS(dataPOS){
   return {
-    Lon = dataPOS[longitude],
-    Lat = dataPOS[latitude]
+    Lon : dataPOS.longitude,
+    Lat : dataPOS.latitude
   }
 };
 
@@ -150,24 +150,32 @@ export default function App(){
   
   React.useEffect(() => {
     let input = 'https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly'
-    const {Lon, Lat} = dataPOS
+    if(dataPOS) {
+      const {Lon, Lat} = dataPOS
+    }  
+    else  
+      return
     const params = {
-      lat = Lat,
-      lon = Lon
+      lat : Lat,
+      lon : Lon
     }
     WeatherAPI.get(input, {params}).then((response) => {
       if (response && response.data && response.data.data) {
         setData1(parseData1(response.data.data));
       }
     });
-  }, []);
+  }, [dataPOS]);
 
   React.useEffect(() => {
     let input = 'https://weatherbit-v1-mashape.p.rapidapi.com/current'
-    const {Lon, Lat} = dataPOS
+    if(dataPOS) {
+      const {Lon, Lat} = dataPOS
+    }
+    else
+      return
     const params = {
-      lat = Lat,
-      lon = Lon
+      lat : Lat,
+      lon : Lon
     }
     WeatherAPI.get(input, {params}).then((response) => {
       if (
@@ -179,7 +187,7 @@ export default function App(){
         setData2(parseData2(response.data.data[0]));
       }
     });
-  }, []);
+  }, [dataPOS]);
 
   if(!data1 || !data2){
     return(
