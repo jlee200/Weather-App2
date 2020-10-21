@@ -152,48 +152,38 @@ export default function App(){
     let input = 'https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly'
     if(dataPOS) {
       const {Lon, Lat} = dataPOS
-    }  
-    else  
-      return
-    const params = {
-      lat : Lat,
-      lon : Lon
+      const params = {
+        lat : Lat,
+        lon : Lon
+     }
+      WeatherAPI.get(input, {params}).then((response) => {
+        if (response && response.data && response.data.data) {
+          setData1(parseData1(response.data.data));
+        }
+      });
     }
-    WeatherAPI.get(input, {params}).then((response) => {
-      if (response && response.data && response.data.data) {
-        setData1(parseData1(response.data.data));
-      }
-    });
   }, [dataPOS]);
 
   React.useEffect(() => {
     let input = 'https://weatherbit-v1-mashape.p.rapidapi.com/current'
     if(dataPOS) {
       const {Lon, Lat} = dataPOS
-    }
-    else
-      return
-    const params = {
-      lat : Lat,
-      lon : Lon
-    }
-    WeatherAPI.get(input, {params}).then((response) => {
-      if (
-        response &&
-        response.data &&
-        response.data.data &&
-        response.data.data.length > 0
-      ) {
-        setData2(parseData2(response.data.data[0]));
+      const params = {
+        lat : Lat,
+        lon : Lon
       }
-    });
+      WeatherAPI.get(input, {params}).then((response) => {
+        if (
+          response &&
+          response.data &&
+          response.data.data &&
+          response.data.data.length > 0
+        ) {
+          setData2(parseData2(response.data.data[0]));
+        }
+      });
+    }
   }, [dataPOS]);
-
-  if(!data1 || !data2){
-    return(
-      <View><Text>Loading...</Text></View>
-    )
-  }
 
   const{cityName, f, image, backimage} = data2; 
 
