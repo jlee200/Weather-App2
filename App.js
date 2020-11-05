@@ -185,69 +185,72 @@ export default function App(){
     }
   }, [dataPOS]);
 
-  const{cityName, f, image, backimage} = data2; 
+  if(data2 || data1) {
+    const{cityName, f, image, backimage} = data2; 
 
-  return(
-    <ImageBackground source={backimage} 
-      style={{
-        flex: 1,
-        objectFit: 'cover',
-        width: '100vw',
-        height: '100vh'
-     }}>
-    <View>
-      <TextInput
-          onChangeText={onChange}
-          onSubmitEditing={onClickSearch}
-          value={value}
-      />
+    return(
+      <ImageBackground source={backimage} 
+        style={{
+          flex: 1,
+          objectFit: 'cover',
+          width: '100vw',
+          height: '100vh'
+      }}>
+      <View>
+        <TextInput
+            onChangeText={onChange}
+            onSubmitEditing={onClickSearch}
+            value={value}
+        />
 
-      <TouchableOpacity 
-          onPress={onClickSearch}>
-          <Text>Go</Text>
-      </TouchableOpacity>
+       <TouchableOpacity 
+            onPress={onClickSearch}>
+            <Text>Go</Text>
+        </TouchableOpacity>
+      </View>
+
+
+      <View
+       style={{
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '5vw',
+          width: '100vw',
+          height: '100vh',
+      }}>
+
+      {data2 && <Text style={styles.data2}>{cityName}</Text>}
+      {data2 && <Text style={styles.data2}>Currently: {Math.round(f)}°F</Text>}
+      {image && <Image source={image} style={{ width: 100, height: 50, marginLeft: -20}} />}
+    
+      <View style={{ display: 'flex', flexDirection: 'row' }}>
+        {data1.map((data) => {
+          const { cHi, cLow, dayOfWeek, fHi, fLow, image } = data;
+         return (
+           <View
+             key={dayOfWeek}
+              style={{
+               padding: '20px',
+                marginRight: '30px',
+             }}>
+             {data1 && <Text style={styles.data1}>{dayOfWeek}</Text>}
+             {image && (
+                <Image source={image} style={{ width: 80, height: 50, marginLeft: -12, marginBottom: 10 }} />
+              )}
+              {data1 && <Text style={styles.data1}>Hi: {Math.round(fHi)}°F</Text>}
+              {data1 && <Text style={styles.data1}>Lo: {Math.round(fLow)}°F</Text>}
+              {data1 && <Text style={styles.data1}>Hi: {Math.round(cHi)}°C</Text>}
+              {data1 && <Text style={styles.data1}>Lo: {Math.round(cLow)}°C</Text>}
+            </View>
+          );
+        })}
+      </View>
     </View>
-
-    <View
-      style={{
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: '5vw',
-        width: '100vw',
-        height: '100vh',
-    }}>
-
-    <Text style={styles.data2}>{cityName}</Text>
-    <Text style={styles.data2}>Currently: {Math.round(f)}°F</Text>
-    {image && <Image source={image} style={{ width: 100, height: 50, marginLeft: -20}} />}
-
-    <View style={{ display: 'flex', flexDirection: 'row' }}>
-      {data1.map((data) => {
-        const { cHi, cLow, dayOfWeek, fHi, fLow, image } = data;
-        return (
-          <View
-            key={dayOfWeek}
-            style={{
-              padding: '20px',
-              marginRight: '30px',
-            }}>
-            <Text style={styles.data1}>{dayOfWeek}</Text>
-            {image && (
-              <Image source={image} style={{ width: 80, height: 50, marginLeft: -12, marginBottom: 10 }} />
-            )}
-            <Text style={styles.data1}>Hi: {Math.round(fHi)}°F</Text>
-            <Text style={styles.data1}>Lo: {Math.round(fLow)}°F</Text>
-            <Text style={styles.data1}>Hi: {Math.round(cHi)}°C</Text>
-            <Text style={styles.data1}>Lo: {Math.round(cLow)}°C</Text>
-          </View>
-        );
-      })}
-    </View>
-  </View>
-  </ImageBackground>
-);
+    </ImageBackground>
+  );
+  }
 }
 const styles = StyleSheet.create({
   data1: {
