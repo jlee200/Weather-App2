@@ -185,7 +185,20 @@ export default function App(){
     }
   }, [dataPOS]);
 
-  if(data2 || data1) {
+  <View>
+    <TextInput
+            onChangeText={onChange}
+            onSubmitEditing={onClickSearch}
+            value={value}
+    />
+
+    <TouchableOpacity 
+        onPress={onClickSearch}>
+        <Text>Go</Text>
+    </TouchableOpacity> 
+  </View>
+
+  if(data2 && data1) {
     const{cityName, f, image, backimage} = data2; 
 
     return(
@@ -196,19 +209,6 @@ export default function App(){
           width: '100vw',
           height: '100vh'
       }}>
-      <View>
-        <TextInput
-            onChangeText={onChange}
-            onSubmitEditing={onClickSearch}
-            value={value}
-        />
-
-       <TouchableOpacity 
-            onPress={onClickSearch}>
-            <Text>Go</Text>
-        </TouchableOpacity>
-      </View>
-
 
       <View
        style={{
