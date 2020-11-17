@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Image,
-  ImageBackground,
-  Picker,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import {ActivityIndicator, Image, ImageBackground, Picker, StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import background1 from './assets/background.png';
 import background2 from './assets/rainy_background.png';
@@ -16,6 +7,8 @@ import cloud from './assets/cloud.png';
 import rain from './assets/rain.png';
 import sun from './assets/sun.png';
 import thun from './assets/thunder.png';
+
+let Loading = true;
 
 const WeatherAPI = axios.create({
   baseURL: 'weatherbit-v1-mashape.p.rapidapi.com',
@@ -77,7 +70,6 @@ function parseDataPOS(dataPOS) {
 function parseData1(data1) {
   const renderData = [];
   var divide = data1.length / 5;
-  var start = divide / 2;
 
   for (let i = 0; i < data1.length; i += divide) {
     const mid = i + divide / 2;
@@ -149,8 +141,6 @@ export default function App(props) {
       limit: 79,
     };
 
-    // setLoading to true
-
     PositionAPI.get(input, { params }).then((response) => {
       if (
         response &&
@@ -161,10 +151,25 @@ export default function App(props) {
         setLocations(response.data.data);
         setLocationsIndex(0);
       } else {
-        // set Error
+        return(
+          <View
+          style={{
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: '5vw',
+            width: '100vw',
+            height: '100vh',
+          }}>
+            <Text style={styles.data2}>
+            Error encountered while searching. Please try again.
+            </Text>
+          </View>
+        )
       }
 
-      // setLoading to false
+      Loading = false; 
     });
   };
 
@@ -211,11 +216,21 @@ export default function App(props) {
     }
   }, [dataPOS]);
 
+  const LoadingIndicator = () => {
+    if(Loading == true) {
+      <View style ={[styles.container, styles.horizontal]}>
+        <ActivityIndicator />
+        <ActivityIndicator size="large" />
+        <ActivityIndicator size="small" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00ff00" />
+      </View>
+    }
+  };
+
   const renderForecast = () => {
-    // or check loading here
 
     if (data2 && data1) {
-      const { cityName, f, image, backimage } = data2;
+      const {f, image, backimage } = data2;
 
       return (
         <ImageBackground
@@ -243,7 +258,7 @@ export default function App(props) {
             {image && (
               <Image
                 source={image}
-                style={{ width: 100, height: 50, marginLeft: -20 }}
+                style={{ width: 170, height: 120, marginLeft: -20 }}
               />
             )}
 
@@ -295,12 +310,16 @@ export default function App(props) {
     <View>
       <View>
         <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
           onChangeText={onChange}
           onSubmitEditing={onClickSearch}
           value={value}
         />
-        <TouchableOpacity onPress={onClickSearch}>
-          <Text>Go</Text>
+        <TouchableOpacity 
+          style={{backgroundColor: "#DDDDDD", padding: 10}}
+          onPress={onClickSearch}
+        >
+          <Text>Type Location in the Line Above and Press Here to Search</Text>
         </TouchableOpacity>
       </View>
 
@@ -319,11 +338,7 @@ export default function App(props) {
         </Picker>
       )}
 
-      {
-        //  loading && spinner
-      }
-
-      {renderForecast()}
+      {Loading ? LoadingIndicator() : renderForecast() }
     </View>
   );
 }
@@ -335,4 +350,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: -30,
   },
+  container: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  horizontal: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      padding: 10
+  }
 });
