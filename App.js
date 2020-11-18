@@ -123,11 +123,10 @@ export default function App(props) {
   const [data1, setData1] = React.useState(null);
   const [data2, setData2] = React.useState(null);
   const [dataPOS, setDataPOS] = React.useState(null);
-  const [Error1, setError1] = React.useState(false);
-  const [Loading, setLoading] = React.useState(true);
+  const [error1, setError1] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [locations, setLocations] = React.useState([]);
   const [locationsIndex, setLocationsIndex] = React.useState(0);
-  const [Search, setSearch] = React.useState(false);
   const [value, setValue] = React.useState(null);
 
   const onChange = (text) => {
@@ -142,7 +141,6 @@ export default function App(props) {
       limit: 79,
     };
 
-    setSearch(true);
     setLoading(true);
     setError1(false);
     PositionAPI.get(input, { params }).then((response) => {
@@ -159,7 +157,6 @@ export default function App(props) {
       }
 
       setLoading(false);
-      setSearch(false);
     });
   };
 
@@ -207,7 +204,7 @@ export default function App(props) {
   }, [dataPOS]);
 
   const LoadingIndicator = () => {
-    if(Loading == true && Search == true) {
+    if(loading == true) {
       return(
         <View style ={[styles.container, styles.horizontal]}>
           <ActivityIndicator size="large" />
@@ -217,7 +214,7 @@ export default function App(props) {
   };
 
   const ErrorEncounter = () => {
-    if(Error1 == true) {
+    if(error1 == true) {
       return(
         <View
           style={{
@@ -350,7 +347,7 @@ export default function App(props) {
       )}
 
       {ErrorEncounter()}
-      {Loading ? LoadingIndicator() : renderForecast() }
+      {loading ? LoadingIndicator() : renderForecast() }
     </View>
   );
 }
