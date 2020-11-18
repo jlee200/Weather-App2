@@ -8,8 +8,6 @@ import rain from './assets/rain.png';
 import sun from './assets/sun.png';
 import thun from './assets/thunder.png';
 
-let Loading = true;
-
 const WeatherAPI = axios.create({
   baseURL: 'weatherbit-v1-mashape.p.rapidapi.com',
   timeout: 1000,
@@ -124,10 +122,13 @@ function parseData2(data) {
 export default function App(props) {
   const [data1, setData1] = React.useState(null);
   const [data2, setData2] = React.useState(null);
+  const [dataPOS, setDataPOS] = React.useState(null);
+  const [Error1, setError1] = React.useState(false);
+  const [Loading, setLoading] = React.useState(true);
   const [locations, setLocations] = React.useState([]);
   const [locationsIndex, setLocationsIndex] = React.useState(0);
+  const [Search, setSearch] = React.useState(false);
   const [value, setValue] = React.useState(null);
-  const [dataPOS, setDataPOS] = React.useState(null);
 
   const onChange = (text) => {
     setValue(text);
@@ -141,6 +142,9 @@ export default function App(props) {
       limit: 79,
     };
 
+    setSearch(true);
+    setLoading(true);
+    setError1(false);
     PositionAPI.get(input, { params }).then((response) => {
       if (
         response &&
@@ -151,25 +155,11 @@ export default function App(props) {
         setLocations(response.data.data);
         setLocationsIndex(0);
       } else {
-        return(
-          <View
-          style={{
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            padding: '5vw',
-            width: '100vw',
-            height: '100vh',
-          }}>
-            <Text style={styles.data2}>
-            Error encountered while searching. Please try again.
-            </Text>
-          </View>
-        )
+        setError1(true);
       }
 
-      Loading = false; 
+      setLoading(false);
+      setSearch(false);
     });
   };
 
@@ -217,13 +207,35 @@ export default function App(props) {
   }, [dataPOS]);
 
   const LoadingIndicator = () => {
-    if(Loading == true) {
-      <View style ={[styles.container, styles.horizontal]}>
-        <ActivityIndicator />
-        <ActivityIndicator size="large" />
-        <ActivityIndicator size="small" color="#0000ff" />
-        <ActivityIndicator size="large" color="#00ff00" />
-      </View>
+    if(Loading == true && Search == true) {
+      return(
+        <View style ={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" />
+        </View>
+      )
+    }
+  };
+
+  const ErrorEncounter = () => {
+    if(Error1 == true) {
+      return(
+        <View
+          style={{
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: '5vw',
+            width: '100vw',
+            height: '100vh',
+          }}>
+          
+          <Text style={styles.data2}>
+          Error encountered while searching. Please try again.
+          </Text>
+
+        </View>
+      )
     }
   };
 
@@ -231,7 +243,6 @@ export default function App(props) {
 
     if (data2 && data1) {
       const {f, image, backimage } = data2;
-
       return (
         <ImageBackground
           source={backimage}
@@ -338,10 +349,12 @@ export default function App(props) {
         </Picker>
       )}
 
+      {ErrorEncounter()}
       {Loading ? LoadingIndicator() : renderForecast() }
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   data1: {
     marginBottom: 5,
