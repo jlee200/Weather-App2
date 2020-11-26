@@ -120,6 +120,9 @@ function parseData2(data) {
 }
 
 export default function App(props) {
+  const [API1, setAPI1] = React.useState(false);
+  const [API2, setAPI2] = React.useState(false);
+  const [API3, setAPI3] = React.useState(false);
   const [data1, setData1] = React.useState(null);
   const [data2, setData2] = React.useState(null);
   const [dataPOS, setDataPOS] = React.useState(null);
@@ -143,6 +146,9 @@ export default function App(props) {
 
     setLoading(true);
     setError1(false);
+    setAPI1(false);
+    setAPI2(false);
+    setAPI3(false);
     PositionAPI.get(input, { params }).then((response) => {
       if (
         response &&
@@ -152,11 +158,8 @@ export default function App(props) {
       ) {
         setLocations(response.data.data);
         setLocationsIndex(0);
-      } else {
-        setError1(true);
+        setAPI1(true);
       }
-
-      setLoading(false);
     });
   };
 
@@ -177,6 +180,7 @@ export default function App(props) {
       WeatherAPI.get(input, { params }).then((response) => {
         if (response && response.data && response.data.data) {
           setData1(parseData1(response.data.data));
+          setAPI2(true);
         }
       });
     }
@@ -198,12 +202,16 @@ export default function App(props) {
           response.data.data.length > 0
         ) {
           setData2(parseData2(response.data.data[0]));
+          setAPI3(true);
         }
       });
     }
   }, [dataPOS]);
 
   const LoadingIndicator = () => {
+    if(API1 == true && API2 == true && API3 == true) {
+      setLoading(false);
+    }
     if(loading == true) {
       return(
         <View style ={[styles.container, styles.horizontal]}>
