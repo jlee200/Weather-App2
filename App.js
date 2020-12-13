@@ -126,7 +126,6 @@ export default function App(props) {
   const [data1, setData1] = React.useState(null);
   const [data2, setData2] = React.useState(null);
   const [dataPOS, setDataPOS] = React.useState(null);
-  const [error1, setError1] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [locations, setLocations] = React.useState([]);
   const [locationsIndex, setLocationsIndex] = React.useState(0);
@@ -145,10 +144,10 @@ export default function App(props) {
     };
 
     setLoading(true);
-    setError1(false);
     setAPI1(false);
     setAPI2(false);
     setAPI3(false);
+    const first = 0;
     PositionAPI.get(input, { params }).then((response) => {
       if (
         response &&
@@ -159,6 +158,7 @@ export default function App(props) {
         setLocations(response.data.data);
         setLocationsIndex(0);
         setAPI1(true);
+        first = 1;
       }
     });
   };
@@ -169,6 +169,7 @@ export default function App(props) {
     }
   }, [locations, locationsIndex]);
 
+  const second = 0;
   React.useEffect(() => {
     let input = 'https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly';
     if (dataPOS) {
@@ -181,11 +182,13 @@ export default function App(props) {
         if (response && response.data && response.data.data) {
           setData1(parseData1(response.data.data));
           setAPI2(true);
+          second = 1;
         }
       });
     }
   }, [dataPOS]);
 
+  const third = 0;
   React.useEffect(() => {
     let input = 'https://weatherbit-v1-mashape.p.rapidapi.com/current';
     if (dataPOS) {
@@ -203,6 +206,7 @@ export default function App(props) {
         ) {
           setData2(parseData2(response.data.data[0]));
           setAPI3(true);
+          third = 1;
         }
       });
     }
@@ -221,8 +225,9 @@ export default function App(props) {
     }
   };
 
+  Promise.all([first, second, third]).then(value => {console.log(value)})
   const ErrorEncounter = () => {
-    if(error1 == true) {
+    if(value != [1, 1, 1]) {
       return(
         <View
           style={{
